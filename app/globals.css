@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * DESIGN.md — estética OpenCode (monospace creme).
+ * Canvas creme único, tinta quase-preta, sem sombras, sem gradientes.
+ */
+:root {
+  --canvas: #fdfcfc;
+  --ink: #201d1d;
+  --body: #424245;
+  --mute: #646262;
+  --hairline: rgba(15, 0, 0, 0.12);
+}
+
+* {
+  border-color: var(--hairline);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-mono), "JetBrains Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-feature-settings: "calt" 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: #201d1d;
+  color: #fdfcfc;
+}
+
+/* Scrollbar discreta, coerente com o creme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: #d8d4d4;
+  border: 2px solid var(--canvas);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c0bcbc;
+}
+
+/* Marcador ASCII reutilizável ([+], [-], [x]) */
+.ascii-marker {
+  font-weight: 700;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
