@@ -5,11 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import {
+  Activity,
   BarChart3,
   Bot,
   Building2,
   CreditCard,
   GitBranch,
+  GitPullRequest,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -31,7 +33,9 @@ export function Sidebar({ plan, isAdmin }: { plan: string; isAdmin: boolean }) {
     { href: "/dashboard", label: "Visão geral", icon: LayoutDashboard },
     { href: "/dashboard/repositorios", label: "Repositórios", icon: GitBranch },
     { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
+    { href: "/dashboard/dora", label: "Métricas DORA", icon: Activity },
     { href: "/dashboard/ia", label: "Inteligência IA", icon: Bot },
+    { href: "/dashboard/automacoes", label: "Automações", icon: GitPullRequest },
     { href: "/dashboard/organizacao", label: "Organização", icon: Building2 },
   ];
   const footerItems: Item[] = [

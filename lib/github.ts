@@ -151,6 +151,54 @@ export class GitHubClient {
       return null;
     }
   }
+
+  /* ── DORA / deploys ── */
+  deployments(owner: string, repo: string) {
+    return this.getAll(`/repos/${owner}/${repo}/deployments`, { per_page: "100" }, 1);
+  }
+  workflowRunsList(owner: string, repo: string, branch?: string) {
+    return this.get<{ workflow_runs: any[] }>(`/repos/${owner}/${repo}/actions/runs`, {
+      per_page: "100",
+      ...(branch ? { branch } : {}),
+    });
+  }
+
+  /* ── Pull Requests (escrita) ── */
+  pullFiles(owner: string, repo: string, number: number) {
+    return this.getAll<{ filename: string; status: string; additions: number; deletions: number; patch?: string }>(
+      `/repos/${owner}/${repo}/pulls/${number}/files`,
+      { per_page: "100" },
+      2,
+    );
+  }
+  async createReview(owner: string, repo: string, number: number, body: string, event = "COMMENT") {
+    const res = await fetch(`${BASE}/repos/${owner}/${repo}/pulls/${number}/reviews`, {
+      method: "POST",
+      headers: { ...this.headers(), "Content-Type": "application/json" } as Record<string, string>,
+      body: JSON.stringify({ body, event }),
+    });
+    return { ok: res.ok, status: res.status };
+  }
+
+  /* ── Webhooks (escrita) ── */
+  async createWebhook(owner: string, repo: string, url: string, secret: string, events: string[]) {
+    const res = await fetch(`${BASE}/repos/${owner}/${repo}/hooks`, {
+      method: "POST",
+      headers: { ...this.headers(), "Content-Type": "application/json" } as Record<string, string>,
+      body: JSON.stringify({
+        name: "web",
+        active: true,
+        events,
+        config: { url, content_type: "json", secret, insecure_ssl: "0" },
+      }),
+    });
+    const d = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, id: d.id as number | undefined, message: d.message as string | undefined };
+  }
+  async deleteWebhook(owner: string, repo: string, hookId: number) {
+    const res = await fetch(`${BASE}/repos/${owner}/${repo}/hooks/${hookId}`, { method: "DELETE", headers: this.headers() });
+    return { ok: res.ok || res.status === 404 };
+  }
 }
 
 /* ───────────────── Agregações de Analytics (puras, testáveis) ───────────── */
